@@ -70,6 +70,60 @@ spec =
                 dayFromDay (endOfYear d) `shouldBe` 31
                 T.diffDays (endOfYear d) d `shouldSatisfy` (<= 365)
 
+        describe "nextWeek" $
+            it "returns a Sunday within the next seven days" $ property $ \d -> do
+                dayToWeekDay (nextWeek d) `shouldBe` D.Sunday
+                nextWeek d `shouldBe` T.addDays 7 (beginningOfWeek d)
+                T.diffDays (nextWeek d) d `shouldSatisfy` (<= 7)
+                T.diffDays (nextWeek d) d `shouldSatisfy` (> 0)
+
+        describe "nextMonth" $
+            it "returns the first day of the next month" $ property $ \d -> do
+                dayFromDay (nextMonth d) `shouldBe` 1
+                monthFromDay (nextMonth d) `shouldBe` if monthFromDay d == 12 then 1 else monthFromDay d + 1
+                yearFromDay (nextMonth d) `shouldBe` if monthFromDay d == 12 then yearFromDay d + 1 else yearFromDay d
+
+        describe "nextQuarter" $
+            it "returns the first day of the next quarter" $ property $ \d -> do
+                [1, 4, 7, 10] `shouldContain` [monthFromDay (nextQuarter d)]
+                dayFromDay (nextQuarter d) `shouldBe` 1
+                ((monthFromDay (beginningOfQuarter d) + 3) `mod` 12) `shouldBe` monthFromDay (nextQuarter d)
+                T.diffDays (nextQuarter d) d `shouldSatisfy` (<= 100)
+                T.diffDays (nextQuarter d) d `shouldSatisfy` (> 0)
+
+        describe "nextYear" $
+            it "returns January 1 of the next year" $ property $ \d -> do
+                monthFromDay (nextYear d) `shouldBe` 1
+                dayFromDay (nextYear d) `shouldBe` 1
+                yearFromDay (nextYear d) `shouldBe` yearFromDay d + 1
+
+        describe "previousWeek" $
+            it "returns a Sunday within the past seven days" $ property $ \d -> do
+                dayToWeekDay (previousWeek d) `shouldBe` D.Sunday
+                previousWeek d `shouldBe` T.addDays (-7) (beginningOfWeek d)
+                T.diffDays (previousWeek d) d `shouldSatisfy` (<= -7)
+                T.diffDays (previousWeek d) d `shouldSatisfy` (> -14)
+
+        describe "previousMonth" $
+            it "returns the first day of the previous month" $ property $ \d -> do
+                dayFromDay (previousMonth d) `shouldBe` 1
+                monthFromDay (previousMonth d) `shouldBe` if monthFromDay d == 1 then 12 else monthFromDay d - 1
+                yearFromDay (previousMonth d) `shouldBe` if monthFromDay d == 1 then yearFromDay d - 1 else yearFromDay d
+
+        describe "previousQuarter" $
+            it "returns the first day of the previous quarter" $ property $ \d -> do
+                [1, 4, 7, 10] `shouldContain` [monthFromDay (previousQuarter d)]
+                dayFromDay (previousQuarter d) `shouldBe` 1
+                ((monthFromDay (beginningOfQuarter d) + 9) `mod` 12) `shouldBe` monthFromDay (previousQuarter d)
+                T.diffDays d (previousQuarter d) `shouldSatisfy` (<= 183)
+                T.diffDays d (previousQuarter d) `shouldSatisfy` (>= 90)
+
+        describe "previousYear" $
+            it "returns January 1 of the previous year" $ property $ \d -> do
+                monthFromDay (previousYear d) `shouldBe` 1
+                dayFromDay (previousYear d) `shouldBe` 1
+                yearFromDay (previousYear d) `shouldBe` yearFromDay d - 1
+
 dayToWeekDay :: T.Day -> D.WeekDay
 dayToWeekDay = D.dateWeekDay . D.dayToDateTime
 

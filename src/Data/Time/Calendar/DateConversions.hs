@@ -11,6 +11,18 @@ module Data.Time.Calendar.DateConversions
     , endOfMonth
     , endOfQuarter
     , endOfYear
+
+    -- next
+    , nextWeek
+    , nextMonth
+    , nextQuarter
+    , nextYear
+
+    -- previous
+    , previousWeek
+    , previousMonth
+    , previousQuarter
+    , previousYear
     ) where
 
 import qualified Data.Dates as D
@@ -51,3 +63,27 @@ endOfQuarter = T.addDays (-1) . T.addGregorianMonthsClip 3 . beginningOfQuarter
 
 endOfYear :: T.Day -> T.Day
 endOfYear = T.addDays (-1) . T.addGregorianYearsClip 1 . beginningOfYear
+
+nextWeek :: T.Day -> T.Day
+nextWeek = T.addDays 7 . beginningOfWeek
+
+nextMonth :: T.Day -> T.Day
+nextMonth = T.addGregorianMonthsClip 1 . beginningOfMonth
+
+nextQuarter :: T.Day -> T.Day
+nextQuarter = T.addGregorianMonthsClip 3 . beginningOfQuarter
+
+nextYear :: T.Day -> T.Day
+nextYear = T.addGregorianMonthsClip 12 . beginningOfYear
+
+previousWeek :: T.Day -> T.Day
+previousWeek = T.addDays (-7) . beginningOfWeek
+
+previousMonth :: T.Day -> T.Day
+previousMonth = T.addGregorianMonthsClip (-1) . beginningOfMonth
+
+previousQuarter :: T.Day -> T.Day
+previousQuarter = T.addGregorianMonthsClip (-3) . beginningOfQuarter
+
+previousYear :: T.Day -> T.Day
+previousYear = T.addGregorianMonthsClip (-12) . beginningOfYear
