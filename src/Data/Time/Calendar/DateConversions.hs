@@ -1,23 +1,19 @@
 module Data.Time.Calendar.DateConversions
-    (
     -- beginning
-      beginningOfWeek
+    ( beginningOfWeek
     , beginningOfMonth
     , beginningOfQuarter
     , beginningOfYear
-
     -- end
     , endOfWeek
     , endOfMonth
     , endOfQuarter
     , endOfYear
-
     -- next
     , nextWeek
     , nextMonth
     , nextQuarter
     , nextYear
-
     -- previous
     , previousWeek
     , previousMonth
@@ -26,7 +22,7 @@ module Data.Time.Calendar.DateConversions
     ) where
 
 import qualified Data.Dates as D
-import qualified Data.Time  as T
+import qualified Data.Time as T
 
 beginningOfWeek :: T.Day -> T.Day
 beginningOfWeek d =
