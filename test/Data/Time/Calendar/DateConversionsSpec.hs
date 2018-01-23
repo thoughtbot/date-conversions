@@ -24,6 +24,12 @@ spec =
         describe "beginningOfWeek" $
             it "returns Sunday" $
             property $ \d -> dayToWeekDay (beginningOfWeek d) `shouldBe` D.Sunday
+        describe "beginningOfBiweek" $
+            it "returns a Sunday in a two-week window" $
+            property $ \d -> do
+                dayToWeekDay (beginningOfBiweek d) `shouldBe` D.Sunday
+                T.diffDays (beginningOfBiweek d) d `shouldSatisfy` (<= 13)
+                T.diffDays (beginningOfBiweek d) d `shouldSatisfy` (>= -13)
         describe "beginningOfMonth" $
             it "retains the month independent of day" $
             property $ \d -> do
@@ -48,6 +54,12 @@ spec =
                 dayToWeekDay (endOfWeek d) `shouldBe` D.Saturday
                 endOfWeek d `shouldSatisfy` (>= d)
                 T.diffDays (endOfWeek d) d `shouldSatisfy` (<= 7)
+        describe "endOfBiweek" $
+            it "returns the correct Saturday" $
+            property $ \d -> do
+                dayToWeekDay (endOfBiweek d) `shouldBe` D.Saturday
+                endOfBiweek d `shouldSatisfy` (>= d)
+                T.diffDays (endOfBiweek d) d `shouldSatisfy` (<= 13)
         describe "endOfMonth" $
             it "retains the month and year independent of day" $
             property $ \d -> do
@@ -74,6 +86,13 @@ spec =
                 nextWeek d `shouldBe` T.addDays 7 (beginningOfWeek d)
                 T.diffDays (nextWeek d) d `shouldSatisfy` (<= 7)
                 T.diffDays (nextWeek d) d `shouldSatisfy` (> 0)
+        describe "nextBiweek" $
+            it "returns a Sunday within the next 14 days" $
+            property $ \d -> do
+                dayToWeekDay (nextBiweek d) `shouldBe` D.Sunday
+                nextBiweek d `shouldBe` T.addDays 14 (beginningOfBiweek d)
+                T.diffDays (nextBiweek d) d `shouldSatisfy` (<= 14)
+                T.diffDays (nextBiweek d) d `shouldSatisfy` (> 0)
         describe "nextMonth" $
             it "returns the first day of the next month" $
             property $ \d -> do
@@ -108,6 +127,13 @@ spec =
                 previousWeek d `shouldBe` T.addDays (-7) (beginningOfWeek d)
                 T.diffDays (previousWeek d) d `shouldSatisfy` (<= -7)
                 T.diffDays (previousWeek d) d `shouldSatisfy` (> -14)
+        describe "previousBiweek" $
+            it "returns a Sunday within the past fourteen days" $
+            property $ \d -> do
+                dayToWeekDay (previousBiweek d) `shouldBe` D.Sunday
+                previousBiweek d `shouldBe` T.addDays (-14) (beginningOfBiweek d)
+                T.diffDays (previousBiweek d) d `shouldSatisfy` (<= -14)
+                T.diffDays (previousBiweek d) d `shouldSatisfy` (> -28)
         describe "previousMonth" $
             it "returns the first day of the previous month" $
             property $ \d -> do
